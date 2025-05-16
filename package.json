@@ -1,13 +1,21 @@
 {
   "name": "fetch-graphql",
   "version": "0.2.0",
-  "description": "GraphQL fetch client",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "repository": "https://github.com/safaiyeh/fetch-graphql",
-  "author": "Jason Safaiyeh <safaiyeh@protonmail.com>",
+  "type": "module",
   "license": "MIT",
-  "contributors": [
-    "Linus Unnebäck <linus@folkdatorn.se>"
-  ]
+  "repository": "LinusU/fetch-graphql",
+  "description": "Super simple GraphQL fetch client, with built in error handling",
+  "exports": {
+    "import": "./index.js",
+    "types": "./index.d.ts"
+  },
+  "scripts": {
+    "test": "node test && standard"
+  },
+  "engines": {
+    "node": "^20.9.0 || ^22.11.0 || >=24.0.0"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
+  }
 }
