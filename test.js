@@ -2,6 +2,7 @@ import { createServer } from 'http'
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { once } from 'node:events'
+import { setTimeout as sleep } from 'node:timers/promises'
 
 import graphql, { GraphQLError } from './index.js'
 
@@ -84,6 +85,25 @@ test('GraphQL partial data with errors', async (t) => {
   await assert.rejects(() => graphql(url, '{ user { name } }'), (err) => {
     assert(err instanceof GraphQLError || err instanceof AggregateError)
     assert.deepEqual(err.data, { user: null })
+    return true
+  })
+})
+
+test('aborts with AbortSignal', async (t) => {
+  const { server, url } = await startTestServer(async (req, res) => {
+    // Simulate a delay so the client has time to abort
+    await sleep(1000)
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify({ data: { slow: true } }))
+  })
+
+  t.after(() => server.close())
+
+  const reason = Symbol('Abort reason')
+  const signal = AbortSignal.abort(reason)
+
+  await assert.rejects(() => graphql(url, '{ slow }', undefined, undefined, { signal }), (err) => {
+    assert.equal(err, reason)
     return true
   })
 })

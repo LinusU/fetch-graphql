@@ -5,11 +5,12 @@ export class GraphQLError extends Error {
   }
 }
 
-export default async function graphql (url, query, variables, headers) {
+export default async function graphql (url, query, variables, headers, options) {
   const response = await fetch(url, {
     body: JSON.stringify({ query, variables }),
     headers: { 'Content-Type': 'application/json', ...headers },
-    method: 'POST'
+    method: 'POST',
+    signal: options?.signal
   })
 
   if (response.status < 200 || response.status >= 300) {
